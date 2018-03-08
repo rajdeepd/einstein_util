@@ -1,17 +1,14 @@
 import os
 
-path = '/Users/rdua/work/metamind/datasets/VOC2005_1'
-cal_tech = path + '/Annotations/Caltech_cars'
 file = open('annotations.csv', 'w')
 
-
-def main():
-    cal_tech_list = os.listdir(cal_tech)
+def generate_annotations(folder):
+    folder_list = os.listdir(folder)
     max_no = 0
 
-    for filename in cal_tech_list:
-
-        full_filepath = cal_tech + '/' + filename
+    for filename in folder_list:
+        print(filename)
+        full_filepath = folder + '/' + filename
         with open(full_filepath) as fp:
             line = fp.readline()
             local_no = 0
@@ -19,8 +16,11 @@ def main():
                 line_ = line.strip()
 
                 if line_.startswith('Bounding box for object'):
-                    local_no += 1
+                    local_no = local_no +  1
+                print('local_no:' + str(local_no))
+                print('max_no:' + str(max_no))
                 if local_no > max_no:
+                    print(str(local_no) + 'greater than' + str(max_no))
                     max_no = local_no
 
                 line = fp.readline()
@@ -36,8 +36,8 @@ def main():
     print(first_line)
     file.write(first_line)
 
-    for filename in cal_tech_list:
-        full_filepath = cal_tech + '/' + filename
+    for filename in folder_list:
+        full_filepath = folder + '/' + filename
         imagename = filename.split(".")[0] + ".png"
         print(full_filepath)
         label = ''
@@ -78,11 +78,12 @@ def main():
         print(final)
         print(bounding_boxes)
         if final != ', \n' and bounding_boxes != '':
-            if no_of_bounding_boxes < bounding_boxes:
-                x = max_no - no_of_bounding_boxes
-                final = final + ' ,' * x + '\n'
-            else:
-                final = final + '\n'
+            # if no_of_bounding_boxes < bounding_boxes:
+            #     x = max_no - no_of_bounding_boxes
+            #     final = final + ' ,' * x + '\n'
+            # else:
+            #     final = final + '\n'
+            final = final + '\n'
             print(final)
             file.write(final)
 
