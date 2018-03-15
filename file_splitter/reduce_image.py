@@ -12,8 +12,8 @@ def load_image( infilename ) :
 train_data = []
 base = "/Users/rdua/work/metamind/datasets/cervical-orginial-train"
 base_red = "/Users/rdua/work/metamind/datasets/cervical-train-reduced-20%"
-base_path = base + "/Type_2/"
-base_red_path = base_red + "/Type_2/"
+base_path = base + "/Type_3/"
+base_red_path = base_red + "/Type_3/"
 
 
 list_files = os.listdir(base_path)

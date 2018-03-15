@@ -1,33 +1,77 @@
 # -*- coding: utf-8 -*-
-# @author: Peter Lamut
+# @author: Rajdeep Dua
 
 import argparse
 import os
 import shutil
+from shutil import copyfile
+import numpy as np
 
-N = 40  # the number of files in seach subfolder folder
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+def create_sub_folders(path, list):
+    for l in list:
+        file_name = os.path.basename(l)
+        if not file_name.startswith('.'):
+            new_ = path + '/' + file_name
+            if not os.path.exists(new_):
+                os.mkdir(new_)
 
 
-def move_files(abs_dirname):
+def move_files(abs_dirname, dest_dir):
     """Move files into subdirectories."""
-
+    labels_split = {}
     files = [os.path.join(abs_dirname, f) for f in os.listdir(abs_dirname)]
 
-    i = 0
-    curr_subdir = None
-
     for f in files:
-        # create new subdir if necessary
-        if i % N == 0:
-            subdir_name = os.path.join(abs_dirname, '{0:03d}'.format(i / N + 1))
+        print(f)
+        f_basename = os.path.basename(f)
+        if os.path.isdir(f):
+            list_ = os.listdir(f)
+            list_withdir = []
+            for l in list_:
+                print(f + '/' + l)
+                list_withdir.append(f + '/' + l)
+            list_split_ = list(chunks(list_withdir, 10))
+            print(list_split_)
+            labels_split[f_basename] = list_split_
+
+    no_of_files = []
+    total_split = 10
+
+
+    # First create split folders
+
+    for i in range(1, total_split):
+        subdir_name = os.path.join(dest_dir, '{0:03d}'.format(i))
+        if not os.path.exists(subdir_name):
             os.mkdir(subdir_name)
-            curr_subdir = subdir_name
 
-        # move file to current dir
-        f_base = os.path.basename(f)
-        shutil.move(f, os.path.join(subdir_name, f_base))
-        i += 1
+        else:
+            print(subdir_name + ' already exists')
+        create_sub_folders(subdir_name, files)
+        for f in files:
+            file_name = os.path.basename(f)
 
+            if os.path.isdir(f):
+                print(file_name)
+                split = labels_split[file_name]
+                print(i)
+                print(len(split))
+                if len(split) > 0:
+                    split_specific = split[i - 1]
+                    print(str(i) + ':' + file_name)
+                    print(split_specific)
+                    for s_ in split_specific:
+                        s_base_file = os.path.basename(s_)
+                        shutil.copyfile(s_, subdir_name + '/' + file_name + '/' + s_base_file)
+                else:
+                    print(file_name + ':split is empty')
+        shutil.make_archive(subdir_name, 'zip', '.')
 
 def parse_args():
     """Parse command line arguments passed to script invocation."""
@@ -41,13 +85,13 @@ def parse_args():
 
 def main():
     """Module's main entry point (zopectl.command)."""
-    args = parse_args()
-    src_dir = args.src_dir
+    src_dir ='/Users/rdua/work/metamind/datasets/temp-march14/cervical-train-reduced-20%'
+    dest_dir ='/Users/rdua/work/metamind/datasets/temp-march14/' + 'destination'
 
     if not os.path.exists(src_dir):
         raise Exception('Directory does not exist ({0}).'.format(src_dir))
 
-    move_files(os.path.abspath(src_dir))
+    move_files(src_dir, dest_dir)
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ import shutil
 from shutil import copytree
 from pathlib2 import Path
 def main():
-    path = '/Users/rdua/work/metamind/datasets'
+    path = '/Users/rdua/work/metamind/datasets/temp-march14'
 
     type_1 = path + '/Type_1'
     type_2 = path + '/Type_2'
