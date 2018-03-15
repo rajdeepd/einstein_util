@@ -6,7 +6,7 @@ import os
 import shutil
 from shutil import copyfile
 import numpy as np
-
+from zip_file import make_zipfile
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
@@ -22,7 +22,7 @@ def create_sub_folders(path, list):
                 os.mkdir(new_)
 
 
-def move_files(abs_dirname, dest_dir):
+def move_files(abs_dirname, dest_dir, zip_location):
     """Move files into subdirectories."""
     labels_split = {}
     files = [os.path.join(abs_dirname, f) for f in os.listdir(abs_dirname)]
@@ -71,7 +71,8 @@ def move_files(abs_dirname, dest_dir):
                         shutil.copyfile(s_, subdir_name + '/' + file_name + '/' + s_base_file)
                 else:
                     print(file_name + ':split is empty')
-        shutil.make_archive(subdir_name, 'zip', '.')
+        #shutil.make_archive(os.path.basename(subdir_name), 'zip',root_dir=None, base_dir=subdir_name  )
+        make_zipfile(zip_location + '/' + os.path.basename(subdir_name) + '.zip', subdir_name)
 
 def parse_args():
     """Parse command line arguments passed to script invocation."""
@@ -87,11 +88,12 @@ def main():
     """Module's main entry point (zopectl.command)."""
     src_dir ='/Users/rdua/work/metamind/datasets/temp-march14/cervical-train-reduced-20%'
     dest_dir ='/Users/rdua/work/metamind/datasets/temp-march14/' + 'destination'
+    zip_location = '/Users/rdua/work/metamind/datasets/temp-march14/' + 'zipped'
 
     if not os.path.exists(src_dir):
         raise Exception('Directory does not exist ({0}).'.format(src_dir))
 
-    move_files(src_dir, dest_dir)
+    move_files(src_dir, dest_dir, zip_location)
 
 
 if __name__ == '__main__':
