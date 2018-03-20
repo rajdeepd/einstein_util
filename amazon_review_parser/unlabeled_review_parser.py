@@ -1,8 +1,8 @@
-review_path= '/Users/rdua/Downloads/sorted_data/automotive/positive.review'
+review_path= '/Users/rdua/Downloads/sorted_data/automotive/negative.review'
 
 import xml.etree.ElementTree as ET
 
-file =  file =open('./amz_automobile_reviews_unlabeled.csv','w')
+file =  file =open('./amz_automobile_reviews__negative_unlabeled.csv','w')
 
 def parse(path):
     parser = ET.XMLParser(encoding="utf-8")
